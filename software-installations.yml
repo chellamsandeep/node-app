@@ -1,0 +1,27 @@
+---
+- hosts: servers
+  tasks:
+    - name: Update the ubuntu repo
+      become: yes
+      apt: update_cache=yes
+      #apt: update_cache=yes force_apt_get=yes cache_valid_time=3600
+
+    - name: Installing the JDK
+      become: yes
+      apt: name=openjdk-8-jdk state=present
+
+
+    - name: Installing jenkins key
+      apt_key: url=https://pkg.jenkins.io/debian-stable/jenkins.io.key state=present
+      become: yes
+
+    - name: repository configured
+      apt_repository: repo='deb https://pkg.jenkins.io/debian-stable binary/' state=present
+      become: yes
+
+    - name: jenkins is installed
+      apt: name=jenkins update_cache=yes
+      become: yes
+
+    - name: jenkins is running
+      service: name=jenkins state=started
